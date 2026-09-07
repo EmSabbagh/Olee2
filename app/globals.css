@@ -2183,3 +2183,211 @@ button svg {
     height: 24px;
   }
 }
+/* Illustrated game-map art: natural edges, flat daylight colors, and clear terrain. */
+.map-stage {
+  background: #285b66;
+}
+.map-stage:after {
+  box-shadow: inset 0 0 70px 12px #102c2838;
+}
+.world-art,
+.isometric-art,
+.sea-shimmer,
+.sprite-sheet {
+  image-rendering: auto;
+}
+.world-art {
+  mask-image: radial-gradient(
+    ellipse farthest-side at 50% 50%,
+    black 84%,
+    transparent 100%
+  );
+}
+.isometric-art {
+  filter: none;
+  mask-image: radial-gradient(
+    ellipse farthest-side,
+    black 84%,
+    transparent 100%
+  );
+}
+.world-intro h1 {
+  text-shadow: 2px 2px #19392fcc;
+}
+.world-intro p,
+.island-heading p {
+  color: #e0ebcf;
+  text-shadow: 0 1px 2px #102d29;
+}
+.sea-label {
+  color: #cee6d785;
+  text-shadow: 0 1px #143d43;
+}
+.compass-widget {
+  color: #d2ddbbbf;
+}
+.map-coordinates {
+  color: #cfdfc5;
+}
+.map-legend {
+  color: #d9e5c190;
+}
+.world-life.transparent-sprites {
+  mix-blend-mode: normal;
+}
+.travel-paths path {
+  stroke: #f4e3a3;
+  opacity: 0.5;
+}
+.ambient-motes {
+  opacity: 0.22;
+}
+.scene-water,
+.sea-shimmer {
+  filter: none;
+  animation-name: illustrated-current;
+}
+@keyframes illustrated-current {
+  0%,
+  100% {
+    opacity: 0.035;
+    transform: translate(-2px, 1px);
+  }
+  45% {
+    opacity: 0.14;
+    transform: translate(2px, -1px);
+  }
+  75% {
+    opacity: 0.075;
+    transform: translate(1px, 0);
+  }
+}
+@media (max-width: 760px) {
+  .map-stage:after {
+    box-shadow: inset 0 0 40px 3px #183e3033;
+  }
+  .isometric-art {
+    mask-image: radial-gradient(
+      ellipse farthest-side,
+      black 88%,
+      transparent 100%
+    );
+  }
+}
+/* Keep the full coastline visible; feather only the outer ocean edge. */
+.map-stage {
+  background: #1b788c;
+}
+.is-exploring .map-stage {
+  background: #1b6b79;
+}
+.world-art,
+.isometric-art {
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent,
+      black 2.5%,
+      black 97.5%,
+      transparent
+    ),
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 2.5%,
+      black 97.5%,
+      transparent
+    );
+  mask-composite: intersect;
+}
+.world-intro .eyebrow,
+.island-heading .eyebrow {
+  color: #f1dea0;
+  text-shadow:
+    0 1px 2px #14382e,
+    1px 0 2px #14382e;
+}
+.sprite-filter-defs {
+  position: absolute;
+  pointer-events: none;
+  overflow: hidden;
+}
+.scene-water {
+  mix-blend-mode: screen;
+}
+@media (max-width: 760px) {
+  .world-art,
+  .isometric-art {
+    mask-image:
+      linear-gradient(
+        to right,
+        transparent,
+        black 2.5%,
+        black 97.5%,
+        transparent
+      ),
+      linear-gradient(
+        to bottom,
+        transparent,
+        black 2.5%,
+        black 97.5%,
+        transparent
+      );
+    mask-composite: intersect;
+  }
+}
+/* Preserve the proportions and dark outlines of the illustrated game units. */
+.map-actor.actor-villager,
+.life-world .actor-villager {
+  width: 14px;
+  height: 21px;
+}
+.world-life:not(.life-world) .actor-villager {
+  width: 16px;
+  height: 24px;
+}
+.map-actor.actor-boat {
+  width: 49px;
+  height: 55px;
+}
+.map-actor.actor-bird {
+  width: 28px;
+  height: 24px;
+}
+@keyframes sprite-frames {
+  0%,
+  24.99% {
+    background-position: var(--frame-0) var(--frame-0-y);
+  }
+  25%,
+  49.99% {
+    background-position: var(--frame-1) var(--frame-1-y);
+  }
+  50%,
+  74.99% {
+    background-position: var(--frame-2) var(--frame-2-y);
+  }
+  75%,
+  100% {
+    background-position: var(--frame-3) var(--frame-3-y);
+  }
+}
+@media (max-width: 760px) {
+  .map-actor.actor-villager,
+  .life-world .actor-villager {
+    width: 12px;
+    height: 18px;
+  }
+  .world-life:not(.life-world) .actor-villager {
+    width: 14px;
+    height: 21px;
+  }
+  .map-actor.actor-boat {
+    width: 37px;
+    height: 42px;
+  }
+  .map-actor.actor-bird {
+    width: 24px;
+    height: 21px;
+  }
+}

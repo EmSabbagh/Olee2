@@ -36,6 +36,7 @@ import {
 import { createAmbience } from '@/lib/ambience';
 import { islands, type IslandId, getLocation } from '@/lib/world';
 import { WorldLife } from '@/components/world-life';
+import { artwork } from '@/lib/art';
 
 const islandIcons = { campaigns: Flag, reels: Film, social: MessageSquare };
 
@@ -160,6 +161,47 @@ export default function Home() {
 
   return (
     <main className={`world-app ${active ? 'is-exploring' : ''}`}>
+      <svg
+        width="0"
+        height="0"
+        aria-hidden="true"
+        className="sprite-filter-defs"
+      >
+        <defs>
+          <filter
+            id="sprite-ink-matte"
+            colorInterpolationFilters="sRGB"
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+          >
+            <feColorMatrix
+              in="SourceGraphic"
+              result="color-ink"
+              type="matrix"
+              values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 40 -40 0 -0.314"
+            />
+            <feColorMatrix
+              in="SourceGraphic"
+              result="dark-ink"
+              type="matrix"
+              values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -4 -4 -4 0 8"
+            />
+            <feComposite
+              in="color-ink"
+              in2="dark-ink"
+              operator="arithmetic"
+              k1="0"
+              k2="1"
+              k3="1"
+              k4="0"
+              result="ink-matte"
+            />
+            <feComposite in="SourceGraphic" in2="ink-matte" operator="in" />
+          </filter>
+        </defs>
+      </svg>
       <a
         href="#navigation"
         className="skip-link"
@@ -209,7 +251,6 @@ export default function Home() {
           island ? `${island.name} island` : 'Interactive portfolio world map'
         }
       >
-        <div className="map-grain" aria-hidden="true" />
         <div className="world-intro">
           <span className="eyebrow">
             <span className="tiny-square" /> WELCOME, EXPLORER
@@ -257,15 +298,19 @@ export default function Home() {
           >
             <Image
               unoptimized
-              width={1536}
-              height={1024}
+              width={artwork.world.width}
+              height={artwork.world.height}
               className="world-art"
-              src="/art/overworld.png"
-              alt="Three lush green islands in a dark emerald sea: a campaign citadel, a cinematic harbor, and a social village."
+              src={artwork.world.src}
+              alt="An illustrated fantasy game map: a green campaign island, a lighthouse harbor, and a social village in a teal sea."
               priority
               onError={() => setAssetError(true)}
             />
-            <div className="sea-shimmer" aria-hidden="true" />
+            <div
+              className="sea-shimmer"
+              aria-hidden="true"
+              style={{ backgroundImage: `url(${artwork.world.src})` }}
+            />
             <Atmosphere />
             <WorldLife />
             <svg
@@ -325,15 +370,17 @@ export default function Home() {
             <div
               className={`island-closeup scene-${island.id}`}
               key={island.id}
-              style={{ aspectRatio: `1024 / ${island.cropHeight}` }}
+              style={{
+                aspectRatio: `${artwork.islands.width} / ${island.cropHeight}`,
+              }}
             >
               <div
                 className="isometric-art"
                 aria-hidden="true"
                 style={{
-                  backgroundImage: 'url(/art/island-scenes.png)',
-                  backgroundSize: `100% ${(1536 / island.cropHeight) * 100}%`,
-                  backgroundPosition: `center ${(island.cropY / (1536 - island.cropHeight)) * 100}%`,
+                  backgroundImage: `url(${artwork.islands.src})`,
+                  backgroundSize: `100% ${(artwork.islands.height / island.cropHeight) * 100}%`,
+                  backgroundPosition: `center ${(island.cropY / (artwork.islands.height - island.cropHeight)) * 100}%`,
                 }}
               />
               <Atmosphere />
@@ -341,9 +388,9 @@ export default function Home() {
                 className="isometric-art scene-water"
                 aria-hidden="true"
                 style={{
-                  backgroundImage: 'url(/art/island-scenes.png)',
-                  backgroundSize: `100% ${(1536 / island.cropHeight) * 100}%`,
-                  backgroundPosition: `center ${(island.cropY / (1536 - island.cropHeight)) * 100}%`,
+                  backgroundImage: `url(${artwork.islands.src})`,
+                  backgroundSize: `100% ${(artwork.islands.height / island.cropHeight) * 100}%`,
+                  backgroundPosition: `center ${(island.cropY / (artwork.islands.height - island.cropHeight)) * 100}%`,
                 }}
               />
               <WorldLife scene={island.id} />

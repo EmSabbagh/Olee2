@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type CSSProperties } from 'react';
 import type { IslandId } from '@/lib/world';
+import { artwork } from '@/lib/art';
 
 type Actor = {
   id: string;
@@ -14,21 +15,40 @@ type Actor = {
 
 // Each frame is cropped from the original atlas without modifying the artwork.
 const spriteCrops = [
-  { x: [66, 376, 683, 993], y: 70, width: 224, height: 240 },
-  { x: [120, 420, 724, 1024], y: 392, width: 120, height: 200 },
-  { x: [120, 420, 724, 1024], y: 680, width: 120, height: 200 },
-  { x: [103, 411, 693, 991], y: 936, width: 180, height: 232 },
+  { x: [94, 386, 682, 983], y: [87, 89, 88, 88], width: 188, height: 212 },
+  {
+    x: [121, 416, 718, 1014],
+    y: [402, 402, 402, 402],
+    width: 120,
+    height: 180,
+  },
+  {
+    x: [120, 415, 716, 1012],
+    y: [703, 703, 703, 703],
+    width: 120,
+    height: 180,
+  },
+  { x: [92, 384, 673, 973], y: [960, 960, 960, 960], width: 176, height: 152 },
 ];
 
 function spriteStyle(row: number, delay: number): CSSProperties {
   const crop = spriteCrops[row];
   return {
-    backgroundSize: `${(1254 / crop.width) * 100}% ${(1254 / crop.height) * 100}%`,
-    backgroundPositionY: `${(crop.y / (1254 - crop.height)) * 100}%`,
-    '--frame-0': `${(crop.x[0] / (1254 - crop.width)) * 100}%`,
-    '--frame-1': `${(crop.x[1] / (1254 - crop.width)) * 100}%`,
-    '--frame-2': `${(crop.x[2] / (1254 - crop.width)) * 100}%`,
-    '--frame-3': `${(crop.x[3] / (1254 - crop.width)) * 100}%`,
+    backgroundImage: `url(${artwork.sprites.src})`,
+    filter:
+      artwork.sprites.background === 'checkerboard'
+        ? 'url(#sprite-ink-matte)'
+        : undefined,
+    backgroundSize: `${(artwork.sprites.width / crop.width) * 100}% ${(artwork.sprites.height / crop.height) * 100}%`,
+    backgroundPositionY: `${(crop.y[0] / (artwork.sprites.height - crop.height)) * 100}%`,
+    '--frame-0-y': `${(crop.y[0] / (artwork.sprites.height - crop.height)) * 100}%`,
+    '--frame-1-y': `${(crop.y[1] / (artwork.sprites.height - crop.height)) * 100}%`,
+    '--frame-2-y': `${(crop.y[2] / (artwork.sprites.height - crop.height)) * 100}%`,
+    '--frame-3-y': `${(crop.y[3] / (artwork.sprites.height - crop.height)) * 100}%`,
+    '--frame-0': `${(crop.x[0] / (artwork.sprites.width - crop.width)) * 100}%`,
+    '--frame-1': `${(crop.x[1] / (artwork.sprites.width - crop.width)) * 100}%`,
+    '--frame-2': `${(crop.x[2] / (artwork.sprites.width - crop.width)) * 100}%`,
+    '--frame-3': `${(crop.x[3] / (artwork.sprites.width - crop.width)) * 100}%`,
     animationDelay: `-${delay / 3}s`,
   } as CSSProperties;
 }
@@ -52,9 +72,9 @@ const worldActors: Actor[] = [
     row: 0,
     path: [
       [49, 94],
-      [53, 87],
-      [56, 77],
-      [60, 64],
+      [51, 84],
+      [54, 75],
+      [58, 60],
     ],
     seconds: 82,
     delay: 33,
@@ -64,9 +84,9 @@ const worldActors: Actor[] = [
     kind: 'villager',
     row: 1,
     path: [
-      [29, 47],
-      [33, 50],
-      [36, 51],
+      [27, 41],
+      [28, 46],
+      [30, 50],
     ],
     seconds: 17,
     delay: 5,
@@ -76,9 +96,9 @@ const worldActors: Actor[] = [
     kind: 'villager',
     row: 2,
     path: [
-      [24, 59],
-      [29, 63],
-      [34, 65],
+      [23, 64],
+      [29, 66],
+      [35, 66],
     ],
     seconds: 23,
     delay: 14,
@@ -88,8 +108,8 @@ const worldActors: Actor[] = [
     kind: 'villager',
     row: 2,
     path: [
-      [34, 32],
-      [38, 34],
+      [36, 39],
+      [40, 33],
     ],
     seconds: 12,
     delay: 4,
@@ -99,9 +119,9 @@ const worldActors: Actor[] = [
     kind: 'villager',
     row: 1,
     path: [
-      [71, 77],
-      [76, 80],
-      [80, 78],
+      [73, 70],
+      [76, 73],
+      [79, 70],
     ],
     seconds: 19,
     delay: 9,
@@ -111,9 +131,9 @@ const worldActors: Actor[] = [
     kind: 'villager',
     row: 2,
     path: [
-      [75, 69],
-      [78, 72],
-      [82, 73],
+      [69, 83],
+      [72, 83],
+      [75, 82],
     ],
     seconds: 16,
     delay: 2,
@@ -151,9 +171,9 @@ const sceneActors: Record<IslandId, Actor[]> = {
       kind: 'villager',
       row: 1,
       path: [
-        [58, 53],
-        [65, 57],
-        [71, 53],
+        [58, 61],
+        [65, 64],
+        [71, 61],
       ],
       seconds: 19,
       delay: 7,
@@ -239,9 +259,9 @@ const sceneActors: Record<IslandId, Actor[]> = {
       kind: 'villager',
       row: 2,
       path: [
-        [57, 62],
-        [63, 57],
-        [70, 55],
+        [56, 50],
+        [64, 44],
+        [72, 39],
       ],
       seconds: 18,
       delay: 11,
@@ -374,7 +394,11 @@ export function WorldLife({ scene = 'world' }: { scene?: IslandId | 'world' }) {
   }, [scene]);
 
   return (
-    <div className={`world-life life-${scene}`} aria-hidden="true" ref={root}>
+    <div
+      className={`world-life life-${scene} ${artwork.sprites.background !== 'black' ? 'transparent-sprites' : ''}`}
+      aria-hidden="true"
+      ref={root}
+    >
       {actors.map((actor) => (
         <div
           key={actor.id}
