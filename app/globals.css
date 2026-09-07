@@ -1914,3 +1914,272 @@ button svg {
     animation: none;
   }
 }
+/* Boats, walking villagers, and gulls share an original four-frame pixel atlas. */
+.world-life {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+  mix-blend-mode: screen;
+}
+.map-actor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  pointer-events: none;
+}
+.actor-facing,
+.sprite-sheet {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+}
+.actor-facing {
+  animation: face-the-path 30s steps(1, end) infinite;
+}
+.sprite-sheet {
+  background-image: url('/art/living-world-sprites.png');
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  image-rendering: pixelated;
+  animation: sprite-frames 0.8s steps(1, end) infinite;
+}
+.actor-boat {
+  width: 92px;
+  height: 92px;
+}
+.actor-boat .sprite-sheet {
+  animation-duration: 2.8s;
+}
+.actor-bird {
+  width: 46px;
+  height: 46px;
+}
+.actor-bird .sprite-sheet {
+  animation-duration: 1.05s;
+}
+.actor-bird .actor-facing {
+  animation: none;
+}
+.life-world .actor-villager {
+  width: 34px;
+  height: 34px;
+}
+.motion-paused * {
+  animation-play-state: paused !important;
+}
+.island-target {
+  z-index: 4;
+}
+.building-hotspots {
+  z-index: 4;
+}
+.ambient-motes {
+  opacity: 0.45;
+}
+.sea-shimmer {
+  animation: pixel-current 8s steps(8, end) infinite;
+  mask-image: radial-gradient(ellipse, black 52%, transparent 79%);
+}
+.scene-water {
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: pixel-current 8s steps(8, end) infinite;
+  clip-path: polygon(
+    0 0,
+    10% 0,
+    8% 34%,
+    4% 53%,
+    14% 72%,
+    33% 88%,
+    51% 97%,
+    72% 88%,
+    93% 74%,
+    99% 49%,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+}
+@keyframes sprite-frames {
+  0%,
+  24.99% {
+    background-position-x: 0%;
+  }
+  25%,
+  49.99% {
+    background-position-x: 33.333333%;
+  }
+  50%,
+  74.99% {
+    background-position-x: 66.666667%;
+  }
+  75%,
+  100% {
+    background-position-x: 100%;
+  }
+}
+@keyframes face-the-path {
+  0%,
+  49.99% {
+    transform: scaleX(var(--facing, 1));
+  }
+  50%,
+  100% {
+    transform: scaleX(calc(var(--facing, 1) * -1));
+  }
+}
+@keyframes pixel-current {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: translate(-3px, 2px);
+  }
+  45% {
+    opacity: 0.31;
+    transform: translate(3px, -2px);
+  }
+  75% {
+    opacity: 0.18;
+    transform: translate(1px, 0);
+  }
+}
+@media (max-width: 760px) {
+  .actor-boat {
+    width: 68px;
+    height: 68px;
+  }
+  .actor-bird {
+    width: 36px;
+    height: 36px;
+  }
+  .map-actor {
+    width: 34px;
+    height: 34px;
+  }
+  .life-world .actor-villager {
+    width: 26px;
+    height: 26px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .world-life,
+  .scene-water,
+  .sea-shimmer {
+    display: none;
+  }
+}
+/* Custom registration keeps each character planted as its animation frame changes. */
+.map-actor,
+.life-world .actor-villager {
+  width: 13px;
+  height: 22px;
+}
+.world-life:not(.life-world) .actor-villager {
+  width: 15px;
+  height: 25px;
+}
+.actor-boat {
+  width: 49px;
+  height: 53px;
+}
+.actor-bird {
+  width: 23px;
+  height: 30px;
+}
+.actor-villager .sprite-sheet {
+  animation:
+    sprite-frames 0.76s steps(1, end) infinite,
+    walking-step 0.76s steps(1, end) infinite;
+}
+.actor-boat .sprite-sheet {
+  animation:
+    sprite-frames 2.8s steps(1, end) infinite,
+    boat-bob 3.6s steps(4, end) infinite;
+}
+@keyframes sprite-frames {
+  0%,
+  24.99% {
+    background-position-x: var(--frame-0);
+  }
+  25%,
+  49.99% {
+    background-position-x: var(--frame-1);
+  }
+  50%,
+  74.99% {
+    background-position-x: var(--frame-2);
+  }
+  75%,
+  100% {
+    background-position-x: var(--frame-3);
+  }
+}
+@keyframes walking-step {
+  0%,
+  49.99% {
+    transform: translateY(0);
+  }
+  25%,
+  74.99% {
+    transform: translateY(-1px);
+  }
+  50%,
+  100% {
+    transform: translateY(0);
+  }
+  75%,
+  99.99% {
+    transform: translateY(-1px);
+  }
+}
+@keyframes boat-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+@media (max-width: 760px) {
+  .actor-boat {
+    width: 37px;
+    height: 40px;
+  }
+  .actor-bird {
+    width: 19px;
+    height: 24px;
+  }
+  .map-actor,
+  .life-world .actor-villager {
+    width: 10px;
+    height: 17px;
+  }
+  .world-life:not(.life-world) .actor-villager {
+    width: 13px;
+    height: 22px;
+  }
+}
+@media (max-width: 760px) {
+  .map-actor,
+  .life-world .actor-villager {
+    width: 10px;
+    height: 17px;
+  }
+  .world-life:not(.life-world) .actor-villager {
+    width: 13px;
+    height: 22px;
+  }
+  .actor-boat {
+    width: 37px;
+    height: 40px;
+  }
+  .actor-bird {
+    width: 19px;
+    height: 24px;
+  }
+}

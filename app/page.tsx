@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/sheet';
 import { createAmbience } from '@/lib/ambience';
 import { islands, type IslandId, getLocation } from '@/lib/world';
+import { WorldLife } from '@/components/world-life';
 
 const islandIcons = { campaigns: Flag, reels: Film, social: MessageSquare };
 
@@ -266,6 +267,7 @@ export default function Home() {
             />
             <div className="sea-shimmer" aria-hidden="true" />
             <Atmosphere />
+            <WorldLife />
             <svg
               className="travel-paths"
               viewBox="0 0 1536 1024"
@@ -335,6 +337,16 @@ export default function Home() {
                 }}
               />
               <Atmosphere />
+              <div
+                className="isometric-art scene-water"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: 'url(/art/island-scenes.png)',
+                  backgroundSize: `100% ${(1536 / island.cropHeight) * 100}%`,
+                  backgroundPosition: `center ${(island.cropY / (1536 - island.cropHeight)) * 100}%`,
+                }}
+              />
+              <WorldLife scene={island.id} />
               <div className="building-hotspots">
                 {island.collections.map((name, i) => (
                   <button
