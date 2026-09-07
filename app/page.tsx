@@ -133,6 +133,7 @@ export default function Home() {
   useEffect(
     () => () => {
       audioRef.current?.dispose();
+      audioRef.current = null;
     },
     [],
   );

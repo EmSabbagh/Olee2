@@ -25,6 +25,7 @@ export function createAmbience() {
     nextTime = 0;
   let timer: ReturnType<typeof setInterval> | undefined;
   let playing = false;
+  let disposed = false;
   const oscillators = new Set<OscillatorNode>();
   function note(
     semitone: number,
@@ -74,9 +75,11 @@ export function createAmbience() {
   document.addEventListener('visibilitychange', visibility);
   return {
     async setPlaying(value: boolean) {
+      if (disposed) return;
       playing = value;
       if (value) {
         await context.resume();
+        if (disposed) return;
         master.gain.cancelScheduledValues(context.currentTime);
         master.gain.setTargetAtTime(0.32, context.currentTime, 0.45);
         if (!timer) {
@@ -92,6 +95,9 @@ export function createAmbience() {
       }
     },
     dispose() {
+      if (disposed) return;
+      disposed = true;
+      playing = false;
       if (timer) clearInterval(timer);
       document.removeEventListener('visibilitychange', visibility);
       for (const oscillator of oscillators) {
@@ -99,7 +105,7 @@ export function createAmbience() {
           oscillator.stop();
         } catch {}
       }
-      void context.close();
+      if (context.state !== 'closed') void context.close().catch(() => {});
     },
   };
 }
