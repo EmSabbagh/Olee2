@@ -2391,3 +2391,217 @@ button svg {
     height: 21px;
   }
 }
+
+/* ---------------------------------------------------------------------
+   Paper-card pass: everything that floats over the map (labels, docks,
+   sheets, dialogs) moves from dark glowing UI chrome to warm paper index
+   cards with ink text — like notes pinned on a map, not a SaaS dark theme.
+   The header/footer stay as a dark frame around the map on purpose, so the
+   paper cards read as objects sitting on top of it. Kept the hard offset
+   shadows (no blur) already used throughout instead of soft glows. */
+:root {
+  --paper: #f1e6d0;
+  --paper-edge: #c9ad84;
+  --paper-ink: #2c2116;
+  --paper-ink-muted: #6b5a44;
+  --paper-shadow: #2c211680;
+}
+.island-label {
+  background: var(--paper);
+  border-color: var(--paper-edge);
+  color: var(--paper-ink);
+  box-shadow: 4px 4px var(--paper-shadow);
+}
+.island-number {
+  color: #8a5a1f;
+  border-right-color: var(--paper-edge);
+}
+.island-label strong {
+  color: var(--paper-ink);
+}
+.island-label svg {
+  color: #8a5a1f;
+}
+.island-caption {
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  color: var(--paper-ink-muted);
+  text-shadow: none;
+  box-shadow: 3px 3px var(--paper-shadow);
+}
+.building-number {
+  background: var(--yellow);
+  color: var(--paper-ink);
+  border-color: #8a5a1f;
+  box-shadow: 3px 3px var(--paper-shadow);
+}
+.building-label {
+  background: var(--paper);
+  border-color: var(--paper-edge);
+  color: var(--paper-ink);
+  box-shadow: 3px 3px var(--paper-shadow);
+}
+.building-label svg {
+  color: #8a5a1f;
+}
+.building-marker:hover .building-label {
+  color: #8a5a1f;
+  border-color: #8a5a1f;
+}
+.explorer-card {
+  background: var(--paper);
+  border-color: var(--paper-edge);
+  color: var(--paper-ink);
+  box-shadow: 5px 5px var(--paper-shadow);
+}
+.explorer-card .eyebrow {
+  color: #8a5a1f;
+}
+.explorer-card p {
+  color: var(--paper-ink-muted);
+}
+.explorer-card:not(:disabled):hover,
+.explorer-card:not(:disabled):focus-visible {
+  border-color: #8a5a1f;
+}
+.card-icon {
+  background: #e3d2ab;
+  color: #8a5a1f;
+  border-color: var(--paper-edge);
+}
+.card-arrow {
+  color: #8a5a1f;
+}
+.collection-dock {
+  background: var(--paper);
+  border-color: var(--paper-edge);
+  box-shadow: 5px 5px var(--paper-shadow);
+}
+.dock-heading {
+  border-bottom-color: var(--paper-edge);
+}
+.dock-heading .eyebrow {
+  color: #8a5a1f;
+}
+.dock-heading > span:last-child {
+  color: var(--paper-ink-muted);
+}
+.collection-links button {
+  color: var(--paper-ink);
+}
+.collection-links button > span {
+  color: var(--paper-ink-muted);
+}
+.collection-links button > svg {
+  color: #8a5a1f;
+}
+.collection-links button:hover {
+  color: #8a5a1f;
+}
+.work-index[data-slot='sheet-content'] {
+  background: var(--paper);
+  border-color: var(--paper-edge);
+  color: var(--paper-ink);
+}
+.work-index [data-slot='sheet-title'] {
+  color: var(--paper-ink);
+}
+.work-index [data-slot='sheet-title'] > span {
+  color: #8a5a1f;
+}
+.work-index [data-slot='sheet-description'] {
+  color: var(--paper-ink-muted);
+}
+.index-title {
+  color: var(--paper-ink);
+}
+.index-title > span,
+.index-title svg {
+  color: #8a5a1f;
+}
+.index-list section {
+  border-bottom-color: var(--paper-edge);
+}
+.index-list section > div button {
+  color: var(--paper-ink-muted);
+}
+.index-list button:hover {
+  color: #8a5a1f;
+}
+.index-note {
+  color: var(--paper-ink-muted);
+}
+.collection-dialog[data-slot='dialog-content'] {
+  background: var(--paper);
+  border-color: var(--paper-edge);
+  box-shadow: 8px 8px var(--paper-shadow);
+}
+.collection-banner {
+  background: #e3d2ab;
+  border-bottom-color: var(--paper-edge);
+}
+.collection-banner [data-slot='dialog-title'] {
+  color: var(--paper-ink);
+}
+.collection-banner [data-slot='dialog-title'] > span {
+  color: #8a5a1f;
+}
+.collection-banner [data-slot='dialog-description'] {
+  color: var(--paper-ink-muted);
+}
+.empty-icon {
+  background: #e3d2ab;
+  color: #8a5a1f;
+  border-color: var(--paper-edge);
+  box-shadow: 4px 4px var(--paper-shadow);
+}
+.collection-empty .eyebrow {
+  color: #8a5a1f;
+}
+.collection-empty h3 {
+  color: var(--paper-ink);
+}
+.collection-empty p {
+  color: var(--paper-ink-muted);
+}
+.yellow-button {
+  color: var(--paper-ink);
+  box-shadow: 3px 3px var(--paper-shadow);
+}
+.dialog-bottom {
+  border-top-color: var(--paper-edge);
+  color: var(--paper-ink-muted);
+}
+.audio-error {
+  background: var(--paper);
+  color: var(--paper-ink);
+  border: 1px solid var(--paper-edge);
+  box-shadow: 3px 3px var(--paper-shadow);
+}
+
+/* Quieter atmosphere: a status dot instead of a pulsing LED, and dust
+   instead of magic sparkle particles. */
+.live-dot {
+  box-shadow: none;
+  border-radius: 0;
+}
+.ambient-motes span {
+  box-shadow: none;
+  opacity: 0;
+}
+@keyframes gold-drift {
+  0% {
+    opacity: 0;
+    transform: translate(0, 5px);
+  }
+  18% {
+    opacity: 0.09;
+  }
+  82% {
+    opacity: 0.09;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, -60px);
+  }
+}
