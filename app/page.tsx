@@ -219,7 +219,7 @@ export default function Home() {
           aria-label="Ali Sabbagh, return to world map"
         >
           <span className="monogram" aria-hidden="true">
-            as<span>✦</span>
+            as<span>.</span>
           </span>
           <span className="brand-copy">
             <strong>ALI SABBAGH</strong>
