@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,6 +15,9 @@ import {
   Plus,
   Volume2,
   VolumeX,
+  Flag,
+  Film,
+  MessageSquare,
   Image as ImageIcon,
 } from 'lucide-react';
 import {
@@ -31,7 +35,10 @@ import {
 } from '@/components/ui/sheet';
 import { createAmbience } from '@/lib/ambience';
 import { islands, type IslandId, getLocation } from '@/lib/world';
-import WorldMapScene from '@/components/scene3d/WorldMapScene';
+import { WorldLife } from '@/components/world-life';
+import { artwork } from '@/lib/art';
+
+const islandIcons = { campaigns: Flag, reels: Film, social: MessageSquare };
 
 const motes = [
   [21, 33, 0, 9],
@@ -67,7 +74,6 @@ function Atmosphere() {
 }
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState<IslandId | null>(null);
   const [collection, setCollection] = useState<string | null>(null);
   const [hovered, setHovered] = useState<IslandId | null>(null);
@@ -76,12 +82,13 @@ export default function Home() {
   const [music, setMusic] = useState(false);
   const [audioError, setAudioError] = useState('');
   const [zoom, setZoom] = useState(1);
+  const [assetError, setAssetError] = useState(false);
   const audioRef = useRef<ReturnType<typeof createAmbience> | null>(null);
   const backRef = useRef<HTMLButtonElement>(null);
+  const markerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const lastIsland = useRef<IslandId | null>(null);
   const island = islands.find((item) => item.id === active);
   const preview = islands.find((item) => item.id === hovered);
-
-  useEffect(() => setMounted(true), []);
 
   const navigate = useCallback((id: IslandId | null, category?: string) => {
     const hash = id
@@ -102,6 +109,7 @@ export default function Home() {
         setVisited((old) =>
           old.includes(next.island!) ? old : [...old, next.island!],
         );
+        lastIsland.current = next.island;
       }
     };
     sync();
@@ -111,6 +119,8 @@ export default function Home() {
 
   useEffect(() => {
     if (active) backRef.current?.focus({ preventScroll: true });
+    else if (lastIsland.current)
+      markerRefs.current[lastIsland.current]?.focus({ preventScroll: true });
   }, [active]);
 
   useEffect(() => {
@@ -149,28 +159,49 @@ export default function Home() {
     else navigate(active, name);
   }
 
-  // Dragging or arrow-keying the 3D scene reports which island is now
-  // facing front. While exploring, that follow-through commits to the new
-  // island; on the world overview it's only a hover-style preview.
-  const handleStopChange = useCallback(
-    (index: number) => {
-      const id = islands[index]?.id;
-      if (!id) return;
-      if (active) {
-        if (id !== active) navigate(id, undefined);
-      } else {
-        setHovered(id);
-      }
-    },
-    [active, navigate],
-  );
-
-  const focusIndex = active
-    ? islands.findIndex((item) => item.id === active)
-    : null;
-
   return (
     <main className={`world-app ${active ? 'is-exploring' : ''}`}>
+      <svg
+        width="0"
+        height="0"
+        aria-hidden="true"
+        className="sprite-filter-defs"
+      >
+        <defs>
+          <filter
+            id="sprite-ink-matte"
+            colorInterpolationFilters="sRGB"
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+          >
+            <feColorMatrix
+              in="SourceGraphic"
+              result="color-ink"
+              type="matrix"
+              values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 40 -40 0 -0.314"
+            />
+            <feColorMatrix
+              in="SourceGraphic"
+              result="dark-ink"
+              type="matrix"
+              values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -4 -4 -4 0 8"
+            />
+            <feComposite
+              in="color-ink"
+              in2="dark-ink"
+              operator="arithmetic"
+              k1="0"
+              k2="1"
+              k3="1"
+              k4="0"
+              result="ink-matte"
+            />
+            <feComposite in="SourceGraphic" in2="ink-matte" operator="in" />
+          </filter>
+        </defs>
+      </svg>
       <a
         href="#navigation"
         className="skip-link"
@@ -231,7 +262,7 @@ export default function Home() {
           <p>
             A few islands. A whole world of design.
             <br />
-            Drag to look around, or click to land.
+            Pick a place. Take a look around.
           </p>
         </div>
 
@@ -256,22 +287,148 @@ export default function Home() {
         )}
 
         <div className="map-canvas">
-          {mounted ? (
-            <WorldMapScene
-              onStopChange={handleStopChange}
-              focusIndex={focusIndex}
-              zoom={active ? 1.2 : zoom}
+          <div
+            className={`overworld ${active ? 'departing' : ''}`}
+            style={{
+              transformOrigin: island ? `${island.x}% ${island.y}%` : '50% 50%',
+              transform: active ? 'scale(2.7)' : `scale(${zoom})`,
+            }}
+            aria-hidden={!!active}
+            inert={!!active}
+          >
+            <Image
+              unoptimized
+              width={artwork.world.width}
+              height={artwork.world.height}
+              className="world-art"
+              src={artwork.world.src}
+              alt="An illustrated fantasy game map: a green campaign island, a lighthouse harbor, and a social village in a teal sea."
+              priority
+              onError={() => setAssetError(true)}
             />
-          ) : (
-            <div className="world-scene-3d scene-loading" aria-hidden="true" />
-          )}
-          <Atmosphere />
-          <div className="sea-label sea-label-one">
-            THE SEA OF POSSIBILITIES
+            <div
+              className="sea-shimmer"
+              aria-hidden="true"
+              style={{ backgroundImage: `url(${artwork.world.src})` }}
+            />
+            <Atmosphere />
+            <WorldLife />
+            <svg
+              className="travel-paths"
+              viewBox="0 0 1536 1024"
+              aria-hidden="true"
+            >
+              <path d="M690 460 Q830 200 1080 330 M1280 390 Q1480 480 1300 640 M1030 870 Q790 1000 650 880" />
+            </svg>
+            {islands.map((item) => (
+              <button
+                key={`territory-${item.id}`}
+                tabIndex={-1}
+                className={`island-territory territory-${item.id}`}
+                aria-label={`Visit ${item.name}`}
+                onClick={() => navigate(item.id)}
+                onMouseEnter={() => setHovered(item.id)}
+                onMouseLeave={() => setHovered(null)}
+              />
+            ))}
+            {islands.map((item) => {
+              const Icon = islandIcons[item.id];
+              return (
+                <button
+                  key={item.id}
+                  ref={(node) => {
+                    markerRefs.current[item.id] = node;
+                  }}
+                  className={`island-target target-${item.id} ${hovered === item.id ? 'is-hovered' : ''}`}
+                  style={{ left: `${item.x}%`, top: `${item.y}%` }}
+                  onClick={() => navigate(item.id)}
+                  onMouseEnter={() => setHovered(item.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  onFocus={() => setHovered(item.id)}
+                  onBlur={() => setHovered(null)}
+                  aria-label={`Explore ${item.name} island`}
+                >
+                  <span className="location-pin">
+                    <Icon size={19} strokeWidth={1.8} />
+                  </span>
+                  <span className="island-label">
+                    <span className="island-number">{item.number}</span>
+                    <strong>{item.name}</strong>
+                    <ArrowUpRight size={17} />
+                  </span>
+                  <span className="island-caption">{item.epithet}</span>
+                </button>
+              );
+            })}
+            <div className="sea-label sea-label-one">
+              THE SEA OF POSSIBILITIES
+            </div>
+            <div className="sea-label sea-label-two">UNEXPLORED WATERS</div>
           </div>
-          <div className="sea-label sea-label-two">UNEXPLORED WATERS</div>
+
+          {island && (
+            <div
+              className={`island-closeup scene-${island.id}`}
+              key={island.id}
+              style={{
+                aspectRatio: `${artwork.islands.width} / ${island.cropHeight}`,
+              }}
+            >
+              <div
+                className="isometric-art"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: `url(${artwork.islands.src})`,
+                  backgroundSize: `100% ${(artwork.islands.height / island.cropHeight) * 100}%`,
+                  backgroundPosition: `center ${(island.cropY / (artwork.islands.height - island.cropHeight)) * 100}%`,
+                }}
+              />
+              <Atmosphere />
+              <div
+                className="isometric-art scene-water"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: `url(${artwork.islands.src})`,
+                  backgroundSize: `100% ${(artwork.islands.height / island.cropHeight) * 100}%`,
+                  backgroundPosition: `center ${(island.cropY / (artwork.islands.height - island.cropHeight)) * 100}%`,
+                }}
+              />
+              <WorldLife scene={island.id} />
+              <div className="building-hotspots">
+                {island.collections.map((name, i) => (
+                  <button
+                    className={`building-marker marker-${i}`}
+                    key={name}
+                    onClick={() => openCollection(name)}
+                    style={{
+                      left: `${island.spots[i][0]}%`,
+                      top: `${island.spots[i][1]}%`,
+                    }}
+                  >
+                    <span className="building-number">
+                      {String(i + 1).padStart(2, '0')}
+                      <Plus size={12} />
+                    </span>
+                    <span className="building-label">
+                      {name}
+                      <ArrowUpRight size={14} />
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
+        {assetError && (
+          <output className="asset-error">
+            The map couldn’t load. You can still explore every collection from
+            the work index.
+            <button onClick={() => setIndexOpen(true)}>
+              Open work index <ArrowRight size={16} />
+            </button>
+          </output>
+        )}
         <div className="compass-widget" aria-hidden="true">
           <span>N</span>
           <Compass size={54} strokeWidth={1} />
@@ -284,13 +441,7 @@ export default function Home() {
           </div>
         )}
         {!active && (
-          <button
-            type="button"
-            className="explorer-card"
-            aria-live="polite"
-            disabled={!preview}
-            onClick={() => preview && navigate(preview.id)}
-          >
+          <div className="explorer-card" aria-live="polite">
             <div className="card-icon">
               {preview ? <ArrowUpRight size={23} /> : <Compass size={23} />}
             </div>
@@ -303,13 +454,13 @@ export default function Home() {
               <p>
                 {preview
                   ? preview.description
-                  : 'Drag or use ← → to face an island, then click here to land.'}
+                  : 'Click an island to explore the work.'}
               </p>
             </div>
             <span className="card-arrow" aria-hidden="true">
               ↗
             </span>
-          </button>
+          </div>
         )}
         {island && (
           <div className="collection-dock" id="navigation" tabIndex={-1}>
@@ -412,8 +563,8 @@ export default function Home() {
       {audioError && <output className="audio-error">{audioError}</output>}
       <output className="sr-only" aria-live="polite">
         {island
-          ? `Now exploring ${island.name}. Choose a collection from the list below.`
-          : 'World map. Drag or use arrow keys to face Campaigns, Reels, or Social Media, then land to explore.'}
+          ? `Now exploring ${island.name}. Choose a collection from a building or the list below.`
+          : 'World map. Choose Campaigns, Reels, or Social Media.'}
       </output>
       <Sheet open={indexOpen} onOpenChange={setIndexOpen}>
         <SheetContent className="work-index">

@@ -235,26 +235,6 @@ button svg {
   transform: translate(-50%, -48%);
   z-index: 1;
 }
-.world-scene-3d {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border: 1px solid #35533d;
-  mask-image: radial-gradient(
-    ellipse at 50% 50%,
-    black 62%,
-    #000e 82%,
-    transparent 96%
-  );
-}
-.world-scene-3d canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-.scene-loading {
-  background: #06150f;
-}
 .overworld {
   position: absolute;
   inset: 0;
@@ -511,18 +491,6 @@ button svg {
   max-width: 520px;
   min-width: 430px;
   box-shadow: 5px 5px #03120c66;
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-.explorer-card:disabled {
-  cursor: default;
-}
-.explorer-card:not(:disabled):hover,
-.explorer-card:not(:disabled):focus-visible {
-  border-color: var(--yellow);
 }
 .card-icon {
   display: grid;
@@ -1836,7 +1804,7 @@ button svg {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: none; /* unused now — the world map is a live 3D scene, not a flat image */
+  background: url('/art/overworld.png') center / 100% 100% no-repeat;
   image-rendering: pixelated;
   mix-blend-mode: screen;
   opacity: 0;
@@ -1973,7 +1941,7 @@ button svg {
   animation: face-the-path 30s steps(1, end) infinite;
 }
 .sprite-sheet {
-  background-image: none; /* unused now — sprite actors were dropped with the AI-art sheet */
+  background-image: url('/art/living-world-sprites.png');
   background-repeat: no-repeat;
   background-size: 400% 400%;
   image-rendering: pixelated;

@@ -5,9 +5,12 @@ export const islands: {
   number: string;
   epithet: string;
   description: string;
-  /** Accent color for this island's 3D landmark highlight. */
-  accent: string;
+  x: number;
+  y: number;
+  cropY: number;
+  cropHeight: number;
   collections: string[];
+  spots: number[][];
 }[] = [
   {
     id: 'campaigns',
@@ -15,12 +18,21 @@ export const islands: {
     number: '01',
     epithet: 'THE BIG IDEA ISLAND',
     description: 'Ideas that travel beyond a single canvas.',
-    accent: '#E8B23D',
+    x: 32,
+    y: 48,
+    cropY: 0,
+    cropHeight: 536,
     collections: [
       'Key Visuals',
       'Online Activation',
       'Onground Activation',
       'Creative 360 Campaign',
+    ],
+    spots: [
+      [25, 36],
+      [51, 24],
+      [74, 48],
+      [32, 74],
     ],
   },
   {
@@ -29,8 +41,12 @@ export const islands: {
     number: '02',
     epithet: 'A LITTLE MOTION MAGIC',
     description: 'Short stories. Lasting impressions.',
-    accent: '#E0574A',
+    x: 77,
+    y: 26,
+    cropY: 536,
+    cropHeight: 486,
     collections: ['Reels'],
+    spots: [[53, 43]],
   },
   {
     id: 'social',
@@ -38,8 +54,16 @@ export const islands: {
     number: '03',
     epithet: 'THE ALWAYS-ON ARCHIPELAGO',
     description: 'Small moments that make people stop scrolling.',
-    accent: '#F2A65A',
+    x: 76,
+    y: 75,
+    cropY: 1022,
+    cropHeight: 514,
     collections: ['Creative Posts', 'Stories', 'Reels'],
+    spots: [
+      [24, 34],
+      [47, 23],
+      [77, 39],
+    ],
   },
 ];
 export function getLocation(hash: string): {
