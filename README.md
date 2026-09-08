@@ -4,7 +4,7 @@ An interactive designer portfolio set in an illustrated fantasy archipelago. Exp
 
 ## Run locally
 
-Requires Node.js **22.13 or later** and npm.
+Requires Node.js **22.x** (22.13 or later) and npm. The `.nvmrc` and package engine keep local and Vercel builds on Node 22.
 
 ```sh
 npm ci
@@ -20,7 +20,24 @@ npm run build
 npm start
 ```
 
-The build produces a Cloudflare Workers-compatible application. `npm start` runs the production build locally through Wrangler.
+The build exports the portfolio as static HTML, JavaScript, CSS, artwork, and fonts in `dist/client`. The map navigation, animations, dialogs, and music run in the browser. No server functions, database, or environment variables are required. `npm start` previews the production build locally.
+
+## Deploy to Vercel
+
+Import the `EmSabbagh/Olee2` GitHub repository into Vercel and deploy the `main` branch. The included `vercel.json` sets the framework and build settings automatically:
+
+| Setting | Value |
+| --- | --- |
+| Framework preset | Vite |
+| Root directory | Repository root (`./`) |
+| Install command | `npm ci` |
+| Build command | `npm run build` |
+| Output directory | `dist/client` |
+| Node.js version | 22.x |
+
+If the Vercel project already has manual build settings, align them with this table before redeploying the latest commit. Island and collection links use URL fragments, so no route rewrites are needed.
+
+The existing Sites project can also publish the same static output using `.openai/hosting.json`.
 
 ## Project guide
 
